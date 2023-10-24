@@ -26,14 +26,46 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
 
     convex_plane::ConvexPlaneConverter::fromMessage(*msg, map, regions, normals, labels);
 
+    for (size_t i=0; i<labels.size(); ++i)
+    {
+        RCLCPP_INFO_STREAM(get_logger(), "label: " << labels[i]);
+        RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].polyhedron.getA());
+        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].polyhedron.getB());
+        RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].ellipsoid.getC());
+        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].ellipsoid.getD());
+        RCLCPP_INFO_STREAM(get_logger(), "normal: " << normals[i].transpose());
+    }
+
+    if (!map.exists("convex_planes"))
+    {
+        map.add("convex_planes", 0.0);
+    }
+    
+    for (grid_map::GridMapIterator iter(map); !iter.isPastEnd(); ++iter)
+    {
+        grid_map::Position pos;
+        map.getPosition(*iter, pos);
+        for (size_t i=0; i<labels.size(); ++i)
+        {
+            if (((regions[i].polyhedron.getA()*pos - regions[i].polyhedron.getB()).array() > 0.0).any()) continue;
+
+            map.at("convex_planes", *iter) = 255;
+        }
+    }
+
     // create image
-    cv::Mat image;
-    grid_map::GridMapCvConverter::toImage<unsigned char, 1>(map, "valid_labels", CV_8UC1, image);
+    cv::Mat image, binary;
+    grid_map::GridMapCvConverter::toImage<unsigned char, 1>(map, "convex_planes", CV_8UC1, binary);
+    // grid_map::GridMapCvConverter::toImage<unsigned char, 1>(map, "convex_planes", CV_8UC1, image);
+    // int min_label = *std::min_element(labels.begin(), labels.end());
+    // RCLCPP_INFO(get_logger(), "min label: %d", min_label);
+    // cv::threshold(image, binary, double(min_label), 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 
     // get contours
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(image, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    cv::findContours(binary, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    RCLCPP_INFO(get_logger(), "Contour size: %d", contours.size());
 
     // create markers to show the contours
     visualization_msgs::msg::MarkerArray marker_array;
@@ -43,8 +75,10 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
         marker_array.markers[i].header = msg->map.header;
         marker_array.markers[i].id = i;
         marker_array.markers[i].type = visualization_msgs::msg::Marker::LINE_STRIP;
-        marker_array.markers[i].type = visualization_msgs::msg::Marker::ADD;
-        marker_array.markers[i].scale.x = 0.005;
+        marker_array.markers[i].action = visualization_msgs::msg::Marker::ADD;
+        marker_array.markers[i].scale.x = 0.05;
+        marker_array.markers[i].scale.y = 0.01;
+        marker_array.markers[i].scale.z = 0.01;
         marker_array.markers[i].color.r = 0.0;
         marker_array.markers[i].color.g = 1.0;
         marker_array.markers[i].color.b = 0.0;
@@ -63,12 +97,15 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
             const cv::Point& point = contour[i];
             index(0) = point.y;
             index(1) = point.x;
-            map.getPosition3("elevation_smooth", index, pos);
+            if (!map.getPosition3("elevation_smooth", index, pos))
+            {
+                RCLCPP_ERROR(get_logger(), "Failed to get position of contour");
+            }
             
             geo_pos.x = pos(0);
             geo_pos.y = pos(1);
             geo_pos.z = pos(2);
-
+            RCLCPP_INFO_STREAM(get_logger(), "set point: " << pos.transpose());
             marker.points.push_back(geo_pos);
         }   
         const cv::Point& point = contour[0];

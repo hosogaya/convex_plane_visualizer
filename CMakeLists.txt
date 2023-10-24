@@ -88,4 +88,23 @@ install(
   DESTINATION include
 )
 
+
+function(add_visualize_test base_name)
+	add_executable(${base_name} test/${base_name}.cpp)
+	ament_target_dependencies(${base_name} ${dependencies})
+  target_link_libraries(${base_name} ${PROJECT_NAME})
+  target_include_directories(${base_name}
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    ${EIGEN3_INCLUDE_DIR}
+  )
+  install(
+    TARGETS ${base_name}
+    DESTINATION lib/${PROJECT_NAME}
+  )
+endfunction()
+
+add_visualize_test(test_line_strip)
+
 ament_package()
