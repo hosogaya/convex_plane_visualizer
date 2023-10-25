@@ -20,6 +20,7 @@ public:
 private:
     rclcpp::Subscription<convex_plane_msgs::msg::ConvexPlanesWithGridMap>::SharedPtr sub_convex_plane_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_marker_;
+    rclcpp::Publisher<grid_map_msgs::msg::GridMap>::SharedPtr pub_grid_map_;
 
     void callbackConvexPlane(const convex_plane_msgs::msg::ConvexPlanesWithGridMap::UniquePtr msg);
 

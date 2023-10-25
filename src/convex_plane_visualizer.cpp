@@ -13,6 +13,10 @@ ConvexPlaneVisualizer::ConvexPlaneVisualizer(const rclcpp::NodeOptions option)
     pub_marker_ = create_publisher<visualization_msgs::msg::MarkerArray>(
         "convex_plane_visualizer/output/marker", 1
     );
+    pub_grid_map_ = create_publisher<grid_map_msgs::msg::GridMap>
+    (
+        "convex_plane_visualizer/output/grid_map", 1
+    );
 }
 
 ConvexPlaneVisualizer::~ConvexPlaneVisualizer() {}
@@ -30,9 +34,9 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
     {
         RCLCPP_INFO_STREAM(get_logger(), "label: " << labels[i]);
         RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].polyhedron.getA());
-        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].polyhedron.getB());
+        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].polyhedron.getB().transpose());
         RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].ellipsoid.getC());
-        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].ellipsoid.getD());
+        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].ellipsoid.getD().transpose());
         RCLCPP_INFO_STREAM(get_logger(), "normal: " << normals[i].transpose());
     }
 
@@ -64,7 +68,7 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
     // get contours
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(binary, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    cv::findContours(binary, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_NONE);
     RCLCPP_INFO(get_logger(), "Contour size: %d", contours.size());
 
     // create markers to show the contours
@@ -105,7 +109,7 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
             geo_pos.x = pos(0);
             geo_pos.y = pos(1);
             geo_pos.z = pos(2);
-            RCLCPP_INFO_STREAM(get_logger(), "set point: " << pos.transpose());
+            // RCLCPP_INFO_STREAM(get_logger(), "set point: " << pos.transpose());
             marker.points.push_back(geo_pos);
         }   
         const cv::Point& point = contour[0];
@@ -120,7 +124,9 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
         marker.points.push_back(geo_pos);
     }
 
+    grid_map_msgs::msg::GridMap::UniquePtr map_msg = grid_map::GridMapRosConverter::toMessage(map);
     pub_marker_->publish(marker_array);
+    pub_grid_map_->publish(std::move(map_msg));
 }
 
 }
