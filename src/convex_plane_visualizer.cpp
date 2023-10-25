@@ -23,7 +23,7 @@ ConvexPlaneVisualizer::~ConvexPlaneVisualizer() {}
 
 void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::ConvexPlanesWithGridMap::UniquePtr msg)
 {
-    std::vector<iris::IRISRegion> regions;
+    std::vector<iris_2d::Region> regions;
     std::vector<Vector> normals;
     std::vector<int> labels;
     grid_map::GridMap map;
@@ -33,10 +33,10 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
     for (size_t i=0; i<labels.size(); ++i)
     {
         RCLCPP_INFO_STREAM(get_logger(), "label: " << labels[i]);
-        RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].polyhedron.getA());
-        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].polyhedron.getB().transpose());
-        RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].ellipsoid.getC());
-        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].ellipsoid.getD().transpose());
+        RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].getA());
+        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].getB().transpose());
+        RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].getC());
+        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].getD().transpose());
         RCLCPP_INFO_STREAM(get_logger(), "normal: " << normals[i].transpose());
     }
 
@@ -51,7 +51,7 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
         map.getPosition(*iter, pos);
         for (size_t i=0; i<labels.size(); ++i)
         {
-            if (((regions[i].polyhedron.getA()*pos - regions[i].polyhedron.getB()).array() > 0.0).any()) continue;
+            if (((regions[i].getA()*pos - regions[i].getB()).array() > 0.0).any()) continue;
 
             map.at("convex_planes", *iter) = 255;
         }

@@ -7,7 +7,7 @@
 #include <convex_plane_msgs/msg/convex_planes_with_grid_map.hpp>
 #include <convex_plane_converter/convex_plane_converter.h>
 #include <grid_map_cv/GridMapCvConverter.hpp>
-#include <iris.h>
+#include <iris_2d/iris_2d.h>
 
 namespace convex_plane
 {

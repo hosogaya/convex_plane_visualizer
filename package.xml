@@ -20,7 +20,7 @@
   <depend>grid_map_cv</depend>
   <depend>autodiff</depend>
   <depend>ifopt</depend>
-  <depend>iris</depend>
+  <depend>iris_2d</depend>
   
 
   <test_depend>ament_lint_auto</test_depend>

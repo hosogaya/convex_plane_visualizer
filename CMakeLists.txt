@@ -19,7 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
-find_package(iris REQUIRED)
+find_package(iris_2d REQUIRED)
 find_package(convex_plane_msgs REQUIRED)
 find_package(convex_plane_converter REQUIRED)
 find_package(visualization_msgs REQUIRED)
@@ -45,7 +45,7 @@ set(dependencies
   rclcpp
   convex_plane_msgs
   convex_plane_converter
-  iris
+  iris_2d
   visualization_msgs
   grid_map_core
   grid_map_ros
@@ -58,7 +58,7 @@ add_library(${PROJECT_NAME} SHARED
   src/convex_plane_visualizer.cpp
 )
 ament_target_dependencies(${PROJECT_NAME} ${dependencies})
-target_link_libraries(${PROJECT_NAME} iris autodiff::autodiff)
+target_link_libraries(${PROJECT_NAME} iris_2d autodiff::autodiff)
 target_include_directories(${PROJECT_NAME}
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
