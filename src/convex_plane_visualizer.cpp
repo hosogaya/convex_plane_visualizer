@@ -30,15 +30,15 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
 
     convex_plane::ConvexPlaneConverter::fromMessage(*msg, map, regions, normals, labels);
 
-    for (size_t i=0; i<labels.size(); ++i)
-    {
-        RCLCPP_INFO_STREAM(get_logger(), "label: " << labels[i]);
-        RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].getA());
-        RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].getB().transpose());
-        RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].getC());
-        RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].getD().transpose());
-        RCLCPP_INFO_STREAM(get_logger(), "normal: " << normals[i].transpose());
-    }
+    // for (size_t i=0; i<labels.size(); ++i)
+    // {
+    //     RCLCPP_INFO_STREAM(get_logger(), "label: " << labels[i]);
+    //     RCLCPP_INFO_STREAM(get_logger(), "A: " << regions[i].getA());
+    //     RCLCPP_INFO_STREAM(get_logger(), "b: " << regions[i].getB().transpose());
+    //     RCLCPP_INFO_STREAM(get_logger(), "C: " << regions[i].getC());
+    //     RCLCPP_INFO_STREAM(get_logger(), "d: " << regions[i].getD().transpose());
+    //     RCLCPP_INFO_STREAM(get_logger(), "normal: " << normals[i].transpose());
+    // }
 
     if (!map.exists("convex_planes"))
     {
@@ -69,7 +69,7 @@ void ConvexPlaneVisualizer::callbackConvexPlane(const convex_plane_msgs::msg::Co
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(binary, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_NONE);
-    RCLCPP_INFO(get_logger(), "Contour size: %d", contours.size());
+    // RCLCPP_INFO(get_logger(), "Contour size: %d", contours.size());
 
     // create markers to show the contours
     visualization_msgs::msg::MarkerArray marker_array;

@@ -1,0 +1,37 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/hosogaya/plane_segmentation/install/elevation_ccl/include/**",
+        "/home/hosogaya/plane_segmentation/install/convex_plane_visualizer/include/**",
+        "/home/hosogaya/plane_segmentation/install/convex_plane_extractor/include/**",
+        "/home/hosogaya/plane_segmentation/install/convex_plane_converter/include/**",
+        "/home/hosogaya/plane_segmentation/install/iris_2d/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_sdf/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_rviz_plugin/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_pcl/include/**",
+        "/home/hosogaya/plane_segmentation/install/elevation_mapping_ros2/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_filters/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_ros/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_octomap/include/**",
+        "/home/hosogaya/plane_segmentation/install/convex_plane_msgs/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_msgs/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_cv/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_costmap_2d/include/**",
+        "/home/hosogaya/plane_segmentation/install/grid_map_core/include/**",
+        "/opt/ros/foxy/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
